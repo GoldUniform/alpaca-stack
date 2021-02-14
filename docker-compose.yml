@@ -1,0 +1,101 @@
+version: '3.7'
+
+networks:
+  alpacanet: {}
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+
+services:
+
+  account_exporter:
+    container_name: account_exporter
+    build:
+      context: .
+      dockerfile: ./account_exporter/Dockerfile
+    environment:
+      - PORT=8000
+      - UPDATE_INTERVAL=30
+    ports:
+      - "8000:8000"
+    networks:
+      - alpacanet
+
+  position_exporter:
+    container_name: position_exporter
+    build:
+      context: .
+      dockerfile: ./position_exporter/Dockerfile
+    environment:
+      - PORT=8001
+      - UPDATE_INTERVAL=30
+    ports:
+      - "8001:8001"
+    networks:
+      - alpacanet
+
+  #strategy_runner:
+  # this is the tough one, but could be really cool. write a stock strategy for 
+  # each received bar on a socket connection, and fire an alertmanager alert for the buy/sell which calls the webhook
+  # which means this could be used without tradingview, and without the webhook at that point, we could just execute the buy/sell
+  # in code
+
+  prometheus:
+    image: prom/prometheus:v2.24.1
+    container_name: prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    networks:
+      - alpacanet
+
+  alertmanager:
+    image: prom/alertmanager:v0.21.0
+    container_name: alertmanager
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    restart: unless-stopped
+    ports:
+      - "9093:9093"
+    networks:
+      - alpacanet
+
+  grafana:
+    image: grafana/grafana:7.4.1
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - alpacanet
+
+  pushgateway:
+    image: prom/pushgateway:v1.4.0
+    container_name: pushgateway
+    restart: unless-stopped
+    ports:
+      - "9091:9091"
+    networks:
+      - alpacanet
