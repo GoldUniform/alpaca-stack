@@ -1,4 +1,5 @@
 from prometheus_client import start_http_server, Summary, Gauge
+import alpaca_trade_api as tradeapi
 import logging, requests, json, yaml
 import os
 import time
@@ -8,27 +9,53 @@ UPDATE_PERIOD = int(os.environ.get('UPDATE_INTERVAL'))
 
 CURRENT_PRICE = Gauge('current_price',
                     'Current Position Price',
-                    ['symbol', 'side', 'exchange', 'asset_class'])
+                    ['symbol', 'side', 'exchange', 'asset_class', 'sector'])
 
 LASTDAY_PRICE = Gauge('lastday_price',
                     'Last Closing Price',
-                    ['symbol', 'side', 'exchange', 'asset_class'])
+                    ['symbol', 'side', 'exchange', 'asset_class', 'sector'])
 
 MARKET_VALUE = Gauge('market_value',
-                    'Market Value of Securities',
-                    ['symbol', 'side', 'exchange', 'asset_class'])
+                    'Market Value of positions',
+                    ['symbol', 'side', 'exchange', 'asset_class', 'sector'])
+
+UNREALIZED_PL = Gauge('unrealized_pl',
+                    'Unrealized Profit/Loss',
+                    ['symbol', 'side', 'exchange', 'asset_class', 'sector'])
+
+QTY = Gauge('qty',
+                    'Quantity of this position',
+                    ['symbol', 'side', 'exchange', 'asset_class', 'sector'])
+        
+AVG_ENTRY_PRICE = Gauge('avg_entry_price',
+                    'Average Entry of this position',
+                    ['symbol', 'side', 'exchange', 'asset_class', 'sector'])
+
+CHANGE_TODAY = Gauge('change_today',
+                    'Change of price since todays open',
+                    ['symbol', 'side', 'exchange', 'asset_class', 'sector'])
 
 def main():
     start_http_server(int(os.environ.get('PORT')))
 
+    api = tradeapi.REST(API_KEY, SECRET_KEY, base_url=BASE_URL)
+    
     while True:
-        # call the alpaca API and get position data
-        p = requests.get(POSITION_URL, headers=HEADERS)
-        position_data = json.loads(p.content)
+        position_data = api.list_positions()
         for s in position_data:
-            CURRENT_PRICE.labels(s['symbol'], s['side'], s['exchange'], s['asset_class']).set(s['current_price'])
-            LASTDAY_PRICE.labels(s['symbol'], s['side'], s['exchange'], s['asset_class']).set(s['lastday_price'])
-            MARKET_VALUE.labels(s['symbol'], s['side'], s['exchange'], s['asset_class']).set(s['market_value'])
+            company_info = api.polygon.company(s.symbol)
+            if hasattr(company_info, 'sector'):
+                sector = company_info.sector
+            else:
+                sector = 'None'
+
+            CURRENT_PRICE.labels(s.symbol, s.side, s.exchange, s.asset_class, sector).set(s.current_price)
+            LASTDAY_PRICE.labels(s.symbol, s.side, s.exchange, s.asset_class, sector).set(s.lastday_price)
+            MARKET_VALUE.labels(s.symbol, s.side, s.exchange, s.asset_class, sector).set(s.market_value)
+            UNREALIZED_PL.labels(s.symbol, s.side, s.exchange, s.asset_class, sector).set(s.unrealized_pl)
+            QTY.labels(s.symbol, s.side, s.exchange, s.asset_class, sector).set(s.qty)
+            AVG_ENTRY_PRICE.labels(s.symbol, s.side, s.exchange, s.asset_class, sector).set(s.avg_entry_price)
+            CHANGE_TODAY.labels(s.symbol, s.side, s.exchange, s.asset_class, sector).set(s.change_today)
 
         time.sleep(UPDATE_PERIOD)
 
@@ -43,10 +70,10 @@ if __name__ == '__main__':
             SECRET_KEY = alpaca_data.get("SECRET_KEY", "")
             BASE_URL = alpaca_data.get("BASE_URL", "")
 
-            ORDERS_URL = "{}/v2/orders".format(BASE_URL)
-            ACCOUNT_URL = "{}/v2/account".format(BASE_URL)
-            POSITION_URL = "{}/v2/positions".format(BASE_URL)
-            HEADERS = {'APCA-API-KEY-ID': API_KEY, 'APCA-API-SECRET-KEY': SECRET_KEY}
+            # ORDERS_URL = "{}/v2/orders".format(BASE_URL)
+            # ACCOUNT_URL = "{}/v2/account".format(BASE_URL)
+            # POSITION_URL = "{}/v2/positions".format(BASE_URL)
+            # HEADERS = {'APCA-API-KEY-ID': API_KEY, 'APCA-API-SECRET-KEY': SECRET_KEY}
 
             main()
 

@@ -31,12 +31,12 @@
               "mode": "absolute",
               "steps": [
                 {
-                  "color": "green",
+                  "color": "dark-red",
                   "value": null
                 },
                 {
-                  "color": "red",
-                  "value": 80
+                  "color": "semi-dark-green",
+                  "value": 1
                 }
               ]
             },
@@ -46,7 +46,7 @@
         },
         "gridPos": {
           "h": 4,
-          "w": 4,
+          "w": 8,
           "x": 0,
           "y": 0
         },
@@ -93,12 +93,12 @@
               "mode": "absolute",
               "steps": [
                 {
-                  "color": "green",
+                  "color": "semi-dark-red",
                   "value": null
                 },
                 {
-                  "color": "red",
-                  "value": 80
+                  "color": "semi-dark-green",
+                  "value": 1
                 }
               ]
             },
@@ -108,8 +108,8 @@
         },
         "gridPos": {
           "h": 4,
-          "w": 4,
-          "x": 4,
+          "w": 8,
+          "x": 8,
           "y": 0
         },
         "id": 5,
@@ -155,12 +155,12 @@
               "mode": "absolute",
               "steps": [
                 {
-                  "color": "green",
+                  "color": "semi-dark-red",
                   "value": null
                 },
                 {
-                  "color": "red",
-                  "value": 80
+                  "color": "semi-dark-green",
+                  "value": 1
                 }
               ]
             },
@@ -170,13 +170,15 @@
         },
         "gridPos": {
           "h": 4,
-          "w": 16,
-          "x": 8,
+          "w": 8,
+          "x": 16,
           "y": 0
         },
-        "id": 2,
+        "id": 9,
         "options": {
-          "displayMode": "gradient",
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
           "orientation": "auto",
           "reduceOptions": {
             "calcs": [
@@ -185,7 +187,258 @@
             "fields": "",
             "values": false
           },
-          "showUnfilled": true,
+          "text": {},
+          "textMode": "auto"
+        },
+        "pluginVersion": "7.4.1",
+        "targets": [
+          {
+            "expr": "sum(unrealized_pl)",
+            "interval": "",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "title": "Unrealized P/L",
+        "type": "stat"
+      },
+      {
+        "datasource": null,
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {},
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "semi-dark-red",
+                  "value": -1
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 0
+                },
+                {
+                  "color": "semi-dark-green",
+                  "value": 0.01
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 24,
+          "x": 0,
+          "y": 4
+        },
+        "id": 13,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "text": {},
+          "textMode": "auto"
+        },
+        "pluginVersion": "7.4.1",
+        "targets": [
+          {
+            "expr": "change_today",
+            "interval": "",
+            "legendFormat": "{{symbol}}",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "Change Today",
+        "type": "stat"
+      },
+      {
+        "datasource": null,
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {},
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "semi-dark-yellow",
+                  "value": null
+                },
+                {
+                  "color": "semi-dark-green",
+                  "value": 0.01
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 24,
+          "x": 0,
+          "y": 7
+        },
+        "id": 15,
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true,
+          "text": {}
+        },
+        "pluginVersion": "7.4.1",
+        "targets": [
+          {
+            "expr": "sum by (sector) (market_value)",
+            "interval": "",
+            "legendFormat": "{{sector}}",
+            "refId": "A"
+          }
+        ],
+        "title": "Market Value by Sector",
+        "type": "gauge"
+      },
+      {
+        "datasource": null,
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {},
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-red",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 0
+                },
+                {
+                  "color": "dark-green",
+                  "value": 1
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 11
+        },
+        "id": 11,
+        "options": {
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true,
+          "text": {}
+        },
+        "pluginVersion": "7.4.1",
+        "targets": [
+          {
+            "expr": "unrealized_pl",
+            "interval": "",
+            "legendFormat": "{{symbol}}",
+            "refId": "A"
+          }
+        ],
+        "title": "Unrealized P/L by Position",
+        "type": "gauge"
+      },
+      {
+        "datasource": null,
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {},
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "semi-dark-red",
+                  "value": null
+                },
+                {
+                  "color": "semi-dark-green",
+                  "value": 1
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 11
+        },
+        "id": 2,
+        "options": {
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true,
           "text": {}
         },
         "pluginVersion": "7.4.1",
@@ -199,104 +452,8 @@
         ],
         "timeFrom": null,
         "timeShift": null,
-        "title": "Portfolio Market Value by Position",
-        "type": "bargauge"
-      },
-      {
-        "aliasColors": {},
-        "bars": false,
-        "dashLength": 10,
-        "dashes": false,
-        "datasource": null,
-        "fieldConfig": {
-          "defaults": {
-            "custom": {},
-            "unit": "currencyUSD"
-          },
-          "overrides": []
-        },
-        "fill": 1,
-        "fillGradient": 0,
-        "gridPos": {
-          "h": 12,
-          "w": 24,
-          "x": 0,
-          "y": 4
-        },
-        "hiddenSeries": false,
-        "id": 7,
-        "legend": {
-          "avg": false,
-          "current": false,
-          "max": false,
-          "min": false,
-          "show": true,
-          "total": false,
-          "values": false
-        },
-        "lines": true,
-        "linewidth": 1,
-        "nullPointMode": "null",
-        "options": {
-          "alertThreshold": true
-        },
-        "percentage": false,
-        "pluginVersion": "7.4.1",
-        "pointradius": 2,
-        "points": false,
-        "renderer": "flot",
-        "seriesOverrides": [],
-        "spaceLength": 10,
-        "stack": false,
-        "steppedLine": false,
-        "targets": [
-          {
-            "expr": "current_price",
-            "interval": "",
-            "legendFormat": "{{symbol}}",
-            "refId": "A"
-          }
-        ],
-        "thresholds": [],
-        "timeFrom": null,
-        "timeRegions": [],
-        "timeShift": null,
-        "title": "Current Position Price",
-        "tooltip": {
-          "shared": true,
-          "sort": 0,
-          "value_type": "individual"
-        },
-        "type": "graph",
-        "xaxis": {
-          "buckets": null,
-          "mode": "time",
-          "name": null,
-          "show": true,
-          "values": []
-        },
-        "yaxes": [
-          {
-            "format": "currencyUSD",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": true
-          },
-          {
-            "format": "short",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": true
-          }
-        ],
-        "yaxis": {
-          "align": false,
-          "alignLevel": null
-        }
+        "title": "Market Value by Position",
+        "type": "gauge"
       }
     ],
     "refresh": "10s",
@@ -313,5 +470,6 @@
     "timepicker": {},
     "timezone": "",
     "title": "Account Overview",
-    "uid": "SwwMeaPGz"
+    "uid": "SwwMeaPGz",
+    "version": 1
   }
