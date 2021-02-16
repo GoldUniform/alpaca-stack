@@ -70,11 +70,6 @@ if __name__ == '__main__':
             SECRET_KEY = alpaca_data.get("SECRET_KEY", "")
             BASE_URL = alpaca_data.get("BASE_URL", "")
 
-            # ORDERS_URL = "{}/v2/orders".format(BASE_URL)
-            # ACCOUNT_URL = "{}/v2/account".format(BASE_URL)
-            # POSITION_URL = "{}/v2/positions".format(BASE_URL)
-            # HEADERS = {'APCA-API-KEY-ID': API_KEY, 'APCA-API-SECRET-KEY': SECRET_KEY}
-
             main()
 
     except Exception as e:

@@ -6,3 +6,7 @@ alpaca:
 
 log:
   log_level: INFO
+
+db:
+  USERNAME: alpaca
+  PASSWORD: pr0f1t

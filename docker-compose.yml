@@ -6,8 +6,25 @@ networks:
 volumes:
     prometheus_data: {}
     grafana_data: {}
+    mysql_data: {}
 
 services:
+
+  db:
+    image: mysql:5.7
+    container_name: database
+    restart: always
+    command: --init-file /data/application/init.sql
+    environment:
+      MYSQL_DATABASE: 'alpacastack'
+      MYSQL_USER: 'alpaca'
+      MYSQL_PASSWORD: 'pr0f1t'
+      MYSQL_ROOT_PASSWORD: 'pr0f1t'
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/data/application/init.sql
 
   account_exporter:
     container_name: account_exporter
@@ -34,12 +51,6 @@ services:
       - "8001:8001"
     networks:
       - alpacanet
-
-  #strategy_runner:
-  # this is the tough one, but could be really cool. write a stock strategy for 
-  # each received bar on a socket connection, and fire an alertmanager alert for the buy/sell which calls the webhook
-  # which means this could be used without tradingview, and without the webhook at that point, we could just execute the buy/sell
-  # in code
 
   prometheus:
     image: prom/prometheus:v2.24.1
@@ -88,14 +99,5 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
-    networks:
-      - alpacanet
-
-  pushgateway:
-    image: prom/pushgateway:v1.4.0
-    container_name: pushgateway
-    restart: unless-stopped
-    ports:
-      - "9091:9091"
     networks:
       - alpacanet
