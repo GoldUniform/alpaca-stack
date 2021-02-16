@@ -287,11 +287,11 @@
               "mode": "absolute",
               "steps": [
                 {
-                  "color": "semi-dark-yellow",
+                  "color": "semi-dark-green",
                   "value": null
                 },
                 {
-                  "color": "semi-dark-green",
+                  "color": "light-orange",
                   "value": 0.01
                 }
               ]
@@ -308,6 +308,8 @@
         },
         "id": 15,
         "options": {
+          "displayMode": "gradient",
+          "orientation": "auto",
           "reduceOptions": {
             "calcs": [
               "lastNotNull"
@@ -315,8 +317,7 @@
             "fields": "",
             "values": false
           },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true,
+          "showUnfilled": true,
           "text": {}
         },
         "pluginVersion": "7.4.1",
@@ -329,7 +330,7 @@
           }
         ],
         "title": "Market Value by Sector",
-        "type": "gauge"
+        "type": "bargauge"
       },
       {
         "datasource": null,
